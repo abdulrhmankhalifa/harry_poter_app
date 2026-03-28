@@ -1,4 +1,5 @@
 import 'package:harry_poter_app/constants/strings.dart';
+import 'package:harry_poter_app/data/models/characters.dart';
 import 'package:harry_poter_app/data/repository/characters_repository.dart';
 import 'package:harry_poter_app/data/services/characters_web_services.dart';
 import 'package:harry_poter_app/logic/cubit/characters_cubit.dart';
@@ -27,7 +28,10 @@ class AppRoute {
         );
 
       case characterDetailsScreen:
-        return MaterialPageRoute(builder: (_) => CharacterDetailsScreen());
+        final character = settings.arguments as Character;
+        return MaterialPageRoute(
+          builder: (_) => CharacterDetailsScreen(character: character),
+        );
     }
     return null;
   }
