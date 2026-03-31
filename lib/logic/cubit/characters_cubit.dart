@@ -11,11 +11,14 @@ class CharactersCubit extends Cubit<CharactersState> {
 
   CharactersCubit(this.charactersRepository) : super(CharactersInitial());
 
-  List<Character> getAllCharacters() {
-    charactersRepository.getAllCharacters().then((characters) {
-      emit(CharactersLoaded(characters));
-      this.characters = characters;
-    });
-    return characters;
+  Future<void> getAllCharacters() async {
+    emit(CharactersLoading());
+    try {
+      final fetchedCharacters = await charactersRepository.getAllCharacters();
+      characters = fetchedCharacters;
+      emit(CharactersLoaded(fetchedCharacters));
+    } catch (e) {
+      emit(CharactersError(e.toString()));
+    }
   }
 }

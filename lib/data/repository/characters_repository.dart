@@ -6,9 +6,18 @@ class CharactersRepository {
   CharactersRepository(this.charactersWebServices);
 
   Future<List<Character>> getAllCharacters() async {
-    final characters = await charactersWebServices.getAllCharacters();
-    return characters
-        .map((characters) => Character.fromJson(characters))
-        .toList();
+    try {
+      final response = await charactersWebServices.getAllCharacters();
+
+      if (response.isEmpty) {
+        throw Exception('No characters found');
+      }
+
+      return response
+          .map((character) => Character.fromJson(character))
+          .toList();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:harry_poter_app/constants/colors.dart';
 import 'package:harry_poter_app/constants/fonts.dart';
@@ -50,7 +51,31 @@ class CharacterDetailsScreen extends StatelessWidget {
         ),
         background: Hero(
           tag: character.id,
-          child: Image.network(character.image, fit: BoxFit.cover),
+          child: Image.network(
+            character.image,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.grey[800],
+                child: Icon(
+                  Icons.image_not_supported,
+                  color: Colors.grey,
+                  size: 50,
+                ),
+              );
+            },
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -134,8 +159,28 @@ class CharacterDetailsScreen extends StatelessWidget {
         buildDvideer(),
         buildDataItem('Actor Name : ', character.actor),
         buildDvideer(),
-        SizedBox(height: 20),
+        SizedBox(height: 50),
+        buildAnimatedText(),
+        SizedBox(height: 50),
       ],
+    );
+  }
+
+  Widget buildAnimatedText() {
+    return DefaultTextStyle(
+      textAlign: TextAlign.center,
+      style: MyFonts.sourceCodeProBold.copyWith(
+        color: MyColors.characterTextColor,
+        fontSize: 18,
+      ),
+      child: AnimatedTextKit(
+        animatedTexts: [
+          TyperAnimatedText(
+            '"Happiness can be found, even in the darkest of times, if one only remembers to turn on the light."',
+          ),
+        ],
+        isRepeatingAnimation: false,
+      ),
     );
   }
 }

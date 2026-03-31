@@ -19,10 +19,14 @@ class CharactersWebServices {
   Future<List<dynamic>> getAllCharacters() async {
     try {
       Response response = await dio.get('characters');
-      return response.data;
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('Failed to load characters. Status: ${response.statusCode}');
+      }
     } catch (e) {
-      log(e.toString());
-      return [];
+      log('Error fetching characters: $e');
+      rethrow;
     }
   }
 }

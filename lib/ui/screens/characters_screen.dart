@@ -48,7 +48,34 @@ class _CharactersScreenState extends State<CharactersScreen> {
           ),
         ),
       ),
+
       body: buildCharactersWidget(),
+    );
+  }
+
+  //no internet widget
+  Widget noInternetWidget() {
+    return Center(
+      child: Container(
+        color: MyColors.backgroundColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 20),
+            Text(
+              'No Internet Connection',
+              style: MyFonts.sourceCodeProBold.copyWith(
+                color: MyColors.characterTextColor,
+                fontSize: 18,
+              ),
+            ),
+            Image.asset(
+              'harry_poter_app/assets/images/No Internet Connection.gif',
+              fit: BoxFit.cover,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -59,10 +86,59 @@ class _CharactersScreenState extends State<CharactersScreen> {
         if (state is CharactersLoaded) {
           allCharacters = (state).characters;
           return loadedCharacterWidget();
+        } else if (state is CharactersError) {
+          return errorWidget(state.message);
+        } else if (state is CharactersLoading) {
+          return loadingCharactersWidget();
         } else {
           return loadingCharactersWidget();
         }
       },
+    );
+  }
+
+  Widget errorWidget(String message) {
+    return Center(
+      child: Container(
+        color: MyColors.backgroundColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 60),
+            SizedBox(height: 20),
+            Text(
+              'Oops! Something went wrong',
+              style: MyFonts.sourceCodeProBold.copyWith(
+                color: MyColors.characterTextColor,
+                fontSize: 18,
+              ),
+            ),
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+                style: MyFonts.sourceCodePro.copyWith(
+                  color: MyColors.characterTextColor,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton.icon(
+              onPressed: () {
+                BlocProvider.of<CharactersCubit>(context).getAllCharacters();
+              },
+              icon: Icon(Icons.refresh),
+              label: Text('Retry'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: MyColors.characterTextColor,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
